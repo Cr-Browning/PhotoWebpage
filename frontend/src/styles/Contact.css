@@ -1,0 +1,156 @@
+.contact-section {
+  background-color: #f9f9f9;
+}
+
+.contact-content {
+  display: flex;
+  gap: 50px;
+}
+
+.contact-info {
+  flex: 1;
+  text-align: left;
+}
+
+.contact-form-container {
+  flex: 1.5;
+}
+
+.contact-item {
+  margin-bottom: 30px;
+}
+
+.contact-item h3 {
+  font-size: 1.8rem;
+  margin: 0 0 15px;
+}
+
+.contact-item h4 {
+  font-size: 1.2rem;
+  margin: 0 0 10px;
+  color: #333;
+}
+
+.contact-item p {
+  margin: 0;
+  color: #666;
+  line-height: 1.6;
+}
+
+.social-links {
+  display: flex;
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.social-link {
+  color: #333;
+  transition: color 0.3s ease;
+}
+
+.social-link:hover {
+  color: #888;
+}
+
+.contact-form {
+  background-color: white;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  font-family: inherit;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #666;
+  outline: none;
+}
+
+.readonly-field {
+  background-color: #f5f5f5;
+  color: #666;
+  cursor: not-allowed;
+  border: 1px solid #ddd;
+}
+
+.readonly-field:focus {
+  border-color: #ddd;
+  outline: none;
+}
+
+.contact-form .btn {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.form-success {
+  background-color: white;
+  padding: 40px 30px;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.form-success h3 {
+  font-size: 1.8rem;
+  margin: 0 0 15px;
+  color: #333;
+}
+
+.form-success p {
+  margin-bottom: 25px;
+  color: #666;
+}
+
+.form-error {
+  background-color: #fff0f0;
+  color: #e74c3c;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  border-left: 4px solid #e74c3c;
+}
+
+button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Responsive styles */
+@media (max-width: 992px) {
+  .contact-content {
+    flex-direction: column;
+    gap: 40px;
+  }
+  
+  .contact-info {
+    text-align: center;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+} 
