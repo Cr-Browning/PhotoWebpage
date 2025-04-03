@@ -1,0 +1,29 @@
+# Auto detect text files and perform LF normalization
+* text=auto
+
+# Frontend specific files
+frontend/**/*.js text eol=lf
+frontend/**/*.jsx text eol=lf
+frontend/**/*.ts text eol=lf
+frontend/**/*.tsx text eol=lf
+frontend/**/*.json text eol=lf
+frontend/**/*.css text eol=lf
+frontend/**/*.scss text eol=lf
+frontend/**/*.html text eol=lf
+
+# Backend specific files
+photography-portfolio-backend/**/*.js text eol=lf
+photography-portfolio-backend/**/*.json text eol=lf
+
+# Documentation
+*.md text eol=lf
+*.txt text eol=lf
+
+# Binary files
+*.png binary
+*.jpg binary
+*.gif binary
+*.ico binary
+*.ttf binary
+*.woff binary
+*.woff2 binary 
