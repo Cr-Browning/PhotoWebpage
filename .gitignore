@@ -27,4 +27,11 @@ yarn-error.log*
 .idea/
 .vscode/
 *.swp
-*.swo 
+*.swo
+
+# Backend files
+backend/package-lock.json
+backend/package.json
+backend/server.js
+backend/src/routes/instagramRoutes.js
+backend/src/services/instagramService.js 

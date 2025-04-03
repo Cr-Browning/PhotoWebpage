@@ -1,0 +1,47 @@
+# System Requirements
+- Windows 10 or later
+- PowerShell (for running commands)
+- Git (for version control)
+
+# Node.js Version Manager (nvm)
+1. Download nvm-windows installer from: https://github.com/coreybutler/nvm-windows/releases/download/1.1.12/nvm-setup.exe
+2. Run installer as administrator
+3. After installation, open new PowerShell as administrator and run:
+   nvm version  # Should show 1.1.12
+
+# Node.js Installation
+1. Using nvm, install Node.js v16.20.2:
+   nvm install 16.20.2
+   nvm use 16.20.2
+
+# Frontend Dependencies (frontend/package.json)
+- react: ^17.0.2
+- react-dom: ^17.0.2
+- react-scripts: ^3.4.4
+- typescript: ^3.9.10
+- @types/node: ^14.14.41
+- @types/react: ^17.0.3
+- @types/react-dom: ^17.0.3
+
+# Backend Dependencies (photography-portfolio-backend/package.json)
+- express: ^4.17.1
+- cors: ^2.8.5
+- dotenv: ^8.2.0
+- axios: ^0.21.1
+
+# Installation Steps
+1. Install nvm-windows
+2. Install Node.js v16.20.2 using nvm
+3. Install frontend dependencies:
+   cd frontend
+   npm install --legacy-peer-deps
+
+4. Install backend dependencies:
+   cd ../photography-portfolio-backend
+   npm install
+
+# Environment Variables
+Create .env file in photography-portfolio-backend with:
+- INSTAGRAM_ACCESS_TOKEN=your_access_token
+- INSTAGRAM_USER_ID=your_user_id
+- PORT=3001 
