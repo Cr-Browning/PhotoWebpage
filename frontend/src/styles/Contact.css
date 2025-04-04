@@ -67,7 +67,7 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: #333;
+  color: #080808;
 }
 
 .form-group input,
@@ -75,7 +75,7 @@
 .form-group textarea {
   width: 100%;
   padding: 12px;
-  border: 1px solid #ddd;
+  border: 1px solid #353333;
   border-radius: 4px;
   font-size: 16px;
   font-family: inherit;
