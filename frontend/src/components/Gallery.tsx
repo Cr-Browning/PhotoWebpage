@@ -30,6 +30,32 @@ const Gallery: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [galleryImages, setGalleryImages] = useState<InstagramPost[]>([]);
+  const [arrowPositions, setArrowPositions] = useState({ left: 0, right: 0 });
+
+  // Update arrow positions when image changes
+  useEffect(() => {
+    const updateArrowPositions = () => {
+      const imageElement = document.querySelector('.fullscreen-image');
+      if (imageElement) {
+        const bounds = imageElement.getBoundingClientRect();
+        setArrowPositions({
+          left: bounds.left - 110,
+          right: bounds.right + 50
+        });
+      }
+    };
+
+    if (selectedImage) {
+      // Wait for image to load before calculating positions
+      const img = new Image();
+      img.src = selectedImage;
+      img.onload = updateArrowPositions;
+
+      // Also add a resize listener to update positions when window is resized
+      window.addEventListener('resize', updateArrowPositions);
+      return () => window.removeEventListener('resize', updateArrowPositions);
+    }
+  }, [selectedImage]);
 
   // Fetch Instagram images on component mount
   useEffect(() => {
@@ -128,30 +154,49 @@ const Gallery: React.FC = () => {
 
   // Handle click on modal area
   const handleModalClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    const modalWidth = e.currentTarget.clientWidth;
-    const clickX = e.clientX;
-    const clickArea = clickX / modalWidth;
+    // Get the image element
+    const imageElement = document.querySelector('.fullscreen-image') as HTMLImageElement;
+    if (!imageElement) return;
 
-    // If clicking on the image itself, don't navigate
-    if ((e.target as HTMLElement).classList.contains('fullscreen-image')) {
+    // Get image boundaries
+    const imageBounds = imageElement.getBoundingClientRect();
+    const clickX = e.clientX;
+    const clickY = e.clientY;
+    
+    // If clicking on the close button, don't handle the click here
+    if ((e.target as HTMLElement).classList.contains('close-modal')) {
       return;
     }
 
-    if (selectedPost?.type === 'carousel' && selectedPost.items) {
-      if (clickArea < 0.3) {
-        // Left 30% of screen - go to previous
-        navigateCarousel('prev');
-      } else if (clickArea > 0.7) {
-        // Right 30% of screen - go to next
-        navigateCarousel('next');
-      } else {
-        // Middle 40% of screen - close modal
-        closeFullScreen();
-      }
-    } else {
-      // If not a carousel, any click closes the modal
-      closeFullScreen();
+    // If clicking on navigation buttons or dots, don't handle
+    if (
+      (e.target as HTMLElement).classList.contains('carousel-nav') ||
+      (e.target as HTMLElement).closest('.carousel-dots')
+    ) {
+      return;
     }
+
+    // Define the vertical click zone (100px above and below the center of the image)
+    const imageVerticalCenter = imageBounds.top + imageBounds.height / 2;
+    const isInVerticalRange = Math.abs(clickY - imageVerticalCenter) <= 100;
+
+    if (selectedPost?.type === 'carousel' && selectedPost.items && isInVerticalRange) {
+      // Check if click is in the navigation zones (outside image bounds)
+      const navWidth = 60; // Width of navigation zone
+      
+      if (clickX >= imageBounds.left - 110 && clickX <= imageBounds.left) {
+        // Left navigation zone
+        navigateCarousel('prev');
+        return;
+      } else if (clickX >= imageBounds.right && clickX <= imageBounds.right + 110) {
+        // Right navigation zone
+        navigateCarousel('next');
+        return;
+      }
+    }
+
+    // If click is outside navigation zones, close the modal
+    closeFullScreen();
   };
 
   return (
@@ -225,41 +270,36 @@ const Gallery: React.FC = () => {
           className="fullscreen-modal" 
           onClick={handleModalClick}
         >
-          <span 
+          <button 
             className="close-modal" 
             onClick={(e) => {
               e.stopPropagation();
               closeFullScreen();
             }}
+            aria-label="Close full screen view"
           >
             &times;
-          </span>
+          </button>
           
           <img 
             src={selectedImage} 
             alt="Full-screen view" 
             className="fullscreen-image"
-            onClick={(e) => e.stopPropagation()} // Prevent navigation when clicking the image
+            onClick={(e) => e.stopPropagation()}
           />
           
           {selectedPost.type === 'carousel' && selectedPost.items && selectedPost.items.length > 1 && (
             <>
-              {/* Click areas for navigation */}
-              <div className="click-area left" onClick={(e) => {
-                e.stopPropagation();
-                navigateCarousel('prev');
-              }} />
-              <div className="click-area right" onClick={(e) => {
-                e.stopPropagation();
-                navigateCarousel('next');
-              }} />
-
-              {/* Existing carousel navigation buttons */}
+              {/* Navigation buttons */}
               <button 
                 className="carousel-nav prev"
                 onClick={(e) => {
                   e.stopPropagation();
                   navigateCarousel('prev');
+                }}
+                style={{
+                  position: 'absolute',
+                  left: `${arrowPositions.left}px`
                 }}
               >
                 ❮
@@ -270,11 +310,15 @@ const Gallery: React.FC = () => {
                   e.stopPropagation();
                   navigateCarousel('next');
                 }}
+                style={{
+                  position: 'absolute',
+                  left: `${arrowPositions.right}px`
+                }}
               >
                 ❯
               </button>
 
-              {/* Existing carousel dots */}
+              {/* Carousel dots */}
               <div className="carousel-dots">
                 {selectedPost.items.map((_, index) => (
                   <span 
