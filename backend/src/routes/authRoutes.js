@@ -38,13 +38,13 @@ router.post('/webhook', (req, res) => {
     res.status(200).send('EVENT_RECEIVED');
 });
 
-// Step 1: Redirect to Instagram's authorization page
+// Redirect to Instagram's authorization page
 router.get('/instagram', (req, res) => {
     const authUrl = `https://api.instagram.com/oauth/authorize?client_id=${CLIENT_ID}&redirect_uri=${REDIRECT_URI}&scope=user_profile,user_media&response_type=code`;
     res.redirect(authUrl);
 });
 
-// Step 2: Handle the callback from Instagram
+// Handle the callback from Instagram
 router.get('/instagram/callback', async (req, res) => {
     const { code } = req.query;
     
@@ -100,7 +100,7 @@ router.get('/instagram/callback', async (req, res) => {
     }
 });
 
-// Step 3: Endpoint to refresh the long-lived token
+// Endpoint to refresh the long-lived token
 router.get('/instagram/refresh_token', async (req, res) => {
     const currentToken = process.env.INSTAGRAM_ACCESS_TOKEN;
 

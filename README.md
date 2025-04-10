@@ -6,7 +6,7 @@ A modern, responsive photography portfolio website built with React, TypeScript,
 
 - Responsive design that works on all devices
 - Instagram integration to display your latest photos
-- Modern UI with smooth animations
+- Modern UI with smooth animations and transitions
 - TypeScript for type safety and better development experience
 - Backend API for Instagram data fetching
 - Easy to customize and extend
@@ -16,6 +16,8 @@ A modern, responsive photography portfolio website built with React, TypeScript,
 - Node.js v16.20.2 (LTS)
 - npm (comes with Node.js)
 - Instagram API credentials (see INSTAGRAM_SETUP.md)
+
+## Project Structure
 
 
 ## Installation
@@ -34,7 +36,7 @@ npm install --legacy-peer-deps
 
 3. Install backend dependencies:
 ```bash
-cd ../photography-portfolio-backend
+cd ../backend
 npm install
 ```
 
@@ -46,7 +48,7 @@ npm install
 
 1. Start the backend server:
 ```bash
-cd photography-portfolio-backend
+cd backend
 npm start
 ```
 
