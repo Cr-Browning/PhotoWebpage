@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import '../styles/Gallery.css';
 
 // Define categories for the gallery
-const categories = ['All', 'Portrait', 'Automotive', 'Fitness', 'Sports'];
+const categories = ['All', 'Portrait', 'Automotive', 'Fitness', 'Sports', 'Architecture', 'Misc'];
 
 interface CarouselItem {
   id: string;
@@ -31,6 +31,8 @@ const Gallery: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [galleryImages, setGalleryImages] = useState<InstagramPost[]>([]);
   const [arrowPositions, setArrowPositions] = useState({ left: 0, right: 0 });
+  const [displayCount, setDisplayCount] = useState(6);
+  const [hasMore, setHasMore] = useState(false);
 
   // Update arrow positions when image changes
   useEffect(() => {
@@ -90,10 +92,51 @@ const Gallery: React.FC = () => {
     loadInstagramImages();
   }, []);
 
+  // Reset display count when category changes
+  useEffect(() => {
+    setDisplayCount(6);
+  }, [activeCategory]);
+
   // Filter images based on active category
   const filteredImages = activeCategory === 'All' 
     ? galleryImages 
     : galleryImages.filter(img => img.category.toLowerCase() === activeCategory.toLowerCase());
+
+  // Get the currently displayed images
+  const displayedImages = filteredImages.slice(0, displayCount);
+  
+  // Check if there are more images to show
+  useEffect(() => {
+    setHasMore(displayCount < filteredImages.length);
+  }, [displayCount, filteredImages.length]);
+
+  // Handle "Show More" button click
+  const handleShowMore = () => {
+    setDisplayCount(prevCount => prevCount + 6);
+  };
+
+  // Handle "Show Less" button click
+  const handleShowLess = () => {
+    const newCount = Math.max(6, displayCount - 6);
+    setDisplayCount(newCount);
+    
+    // Wait for the DOM to update with the new count
+    setTimeout(() => {
+      // Get all gallery items
+      const galleryItems = document.querySelectorAll('.gallery-item');
+      if (galleryItems.length > 0) {
+        // Calculate the index of the first item in the last batch
+        const targetIndex = newCount - 6;
+        if (targetIndex >= 0) {
+          // Scroll to the first item of the last batch
+          galleryItems[targetIndex].scrollIntoView({ 
+            behavior: 'smooth',
+            block: 'start'
+          });
+        }
+      }
+    }, 100); // Small delay to ensure DOM has updated
+  };
 
   // Open full-screen image view
   const openFullScreen = (post: InstagramPost, initialImageUrl?: string) => {
@@ -202,7 +245,7 @@ const Gallery: React.FC = () => {
   return (
     <section id="gallery" className="section gallery-section">
       <div className="container">
-        <h2 className="section-title">My Portfolio</h2>
+        <h2 className="section-title">Portfolio</h2>
         
         <div className="gallery-categories">
           {categories.map(category => (
@@ -224,43 +267,61 @@ const Gallery: React.FC = () => {
           <div className="error-message">
             <p>{error}</p>
           </div>
-        ) : filteredImages.length === 0 ? (
+        ) : displayedImages.length === 0 ? (
           <div className="no-images-message">
             <p>No images found in this category.</p>
           </div>
         ) : (
-          <div className="gallery-grid">
-            {filteredImages.map(post => (
-              <div key={post.id} className="gallery-item">
-                <div 
-                  className="gallery-image-container" 
-                  onClick={() => openFullScreen(post, post.type === 'carousel' ? post.items?.[0].url : post.url)}
-                >
-                  <img 
-                    src={post.type === 'carousel' ? post.items?.[0].thumbnail : (post.thumbnail || post.url)} 
-                    alt={post.caption} 
-                    className="gallery-image"
-                    loading="lazy"
-                  />
-                  {post.type === 'carousel' && (
-                    <div className="carousel-indicator">
-                      <span className="carousel-icon">◇</span>
-                    </div>
-                  )}
+          <>
+            <div className="gallery-grid">
+              {displayedImages.map(post => (
+                <div key={post.id} className="gallery-item">
+                  <div 
+                    className="gallery-image-container" 
+                    onClick={() => openFullScreen(post, post.type === 'carousel' ? post.items?.[0].url : post.url)}
+                  >
+                    <img 
+                      src={post.type === 'carousel' ? post.items?.[0].thumbnail : (post.thumbnail || post.url)} 
+                      alt={post.caption} 
+                      className="gallery-image"
+                      loading="lazy"
+                    />
+                    {post.type === 'carousel' && (
+                      <div className="carousel-indicator">
+                        <span className="carousel-icon">◇</span>
+                      </div>
+                    )}
+                  </div>
+                  <div className="image-overlay">
+                    <p>{post.category}</p>
+                    {post.caption && (
+                      <p className="image-caption">
+                        {post.caption.length > 100 
+                          ? `${post.caption.substring(0, 100)}...` 
+                          : post.caption}
+                      </p>
+                    )}
+                  </div>
                 </div>
-                <div className="image-overlay">
-                  <p>{post.category}</p>
-                  {post.caption && (
-                    <p className="image-caption">
-                      {post.caption.length > 100 
-                        ? `${post.caption.substring(0, 100)}...` 
-                        : post.caption}
-                    </p>
-                  )}
-                </div>
+              ))}
+            </div>
+            
+            {hasMore && (
+              <div className="show-more-container">
+                <button className="show-more-btn" onClick={handleShowMore}>
+                  Show More
+                </button>
               </div>
-            ))}
-          </div>
+            )}
+            
+            {displayCount > 6 && (
+              <div className="show-less-container">
+                <button className="show-less-btn" onClick={handleShowLess}>
+                  Show Less
+                </button>
+              </div>
+            )}
+          </>
         )}
       </div>
 
